@@ -11,7 +11,9 @@ class AIAppInteractor(private val context: Context) {
     private val workingMemory = TaskWorkingMemory()
     
     fun openAIApp(meta: AIAppMeta): Boolean {
-        return JarvisAccessibilityService.instance?.openAppByPackage(meta.packageName) ?: false
+        val service = JarvisAccessibilityService.instance ?: return false
+        service.openAppByPackage(meta.packageName)
+        return true
     }
     
     suspend fun clearContext() {
@@ -52,7 +54,7 @@ class AIAppInteractor(private val context: Context) {
     fun extractResponse(meta: AIAppMeta): String {
         when (meta.responseExtraction) {
             ResponseExtraction.SCREEN_TEXT -> {
-                return screenReader.extractAllText()
+                return screenReader?.extractAllText() ?: ""
             }
             ResponseExtraction.OCR_REQUIRED -> {
                 return screenReader.extractAllText()
