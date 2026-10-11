@@ -11,8 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.*
@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -322,7 +323,7 @@ private fun SettingsHeader(onNavigateBack: () -> Unit) {
     ) {
         IconButton(onClick = onNavigateBack) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
                 tint = VoidColor.TextSecondary
             )
@@ -410,7 +411,7 @@ private fun ProviderSelectorCard(
             )
             
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = VoidColor.TextDisabled,
                 modifier = Modifier.graphicsLayer(rotationZ = rotationAngle)
@@ -510,6 +511,8 @@ fun FloatingLabelTextField(
     visible: Boolean = true,
     onTogglePassword: (() -> Unit)? = null
 ) {
+    var showPassword by remember { mutableStateOf(false) }
+
     val labelOffset by animateFloatAsState(
         targetValue = if (isFocused || value.isNotEmpty()) -20f else 0f,
         animationSpec = spring(stiffness = 300f, dampingRatio = 0.75f),
@@ -548,7 +551,7 @@ fun FloatingLabelTextField(
                     color = VoidColor.TextSecondary
                 ),
                 modifier = Modifier.graphicsLayer {
-                    translationY = labelOffset.dp.toPx()
+                    translationY = labelOffset
                     scaleX = labelScale
                     scaleY = labelScale
                 }
@@ -768,7 +771,7 @@ private fun PermissionRow(
             }
             
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = VoidColor.Red
             )

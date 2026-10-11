@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
 import com.openjarvis.accessibility.JarvisAccessibilityService
 import com.openjarvis.agent.Action
 import com.openjarvis.voice.VoiceManager
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 class TutorialMode(private val context: Context) {
     
     private val voiceManager = VoiceManager(context)
-    private val modeFlow = MutableStateFlow(TutorialState.OFF)
+    private val modeFlow = MutableStateFlow<TutorialState>(TutorialState.Off)
     private val currentStepFlow = MutableStateFlow<TutorialStep?>(null)
     
     private var overlayWindow: WindowManager? = null
@@ -54,7 +55,7 @@ class TutorialMode(private val context: Context) {
         val stepNum = stepHistory.size + 1
         val narration = generateNarration(action)
         
-        val step = TutorialStep(stepNum, action.description ?: action.action, bounds, narration)
+        val step = TutorialStep(stepNum, action.hint ?: action.action, bounds, narration)
         currentStepFlow.value = step
         
         showHighlight(bounds, narration)
@@ -96,7 +97,7 @@ class TutorialMode(private val context: Context) {
             }
             
             overlayWindow = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            overlayWindow?.addView(highlightView, WindowManager.LayoutParams())
+            overlayWindow?.addView(highlightView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, if (android.os.Build.VERSION.SDK_INT >= 26) LayoutParams.TYPE_APPLICATION_OVERLAY else LayoutParams.TYPE_PHONE, LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCHABLE or LayoutParams.FLAG_LAYOUT_IN_SCREEN, android.graphics.PixelFormat.TRANSLUCENT))
         } catch (e: Exception) {
             e.printStackTrace()
         }

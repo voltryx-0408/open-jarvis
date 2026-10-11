@@ -21,6 +21,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -276,7 +279,7 @@ private fun StatsRow(tasks: List<TaskNode>, alpha: Float) {
         label = "count"
     )
     
-    Column(alpha = alpha) {
+    Column(modifier = Modifier.graphicsLayer(alpha = alpha)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -336,7 +339,7 @@ private fun StatCard(count: Int, label: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun RecentTasksSection(tasks: List<TaskNode>, alpha: Float) {
-    Column(alpha = alpha) {
+    Column(modifier = Modifier.graphicsLayer(alpha = alpha)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -505,7 +508,7 @@ private fun AppInitialBadge(label: String) {
 
 @Composable
 private fun QuickAppsSection(apps: List<AppNode>, alpha: Float) {
-    Column(alpha = alpha) {
+    Column(modifier = Modifier.graphicsLayer(alpha = alpha)) {
         Text(
             text = "QUICK APPS",
             style = TextStyle(

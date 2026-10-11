@@ -215,8 +215,10 @@ class AppBuilderMode(private val context: Context) {
     )
     
     enum class FileType {
-        GRADLE, GRADLE_APP, MANIFEST, KOTLIN, XML, PROPERTIES, MARKDOWN
+        GRADLE, GRADLE_APP, MANIFEST, KOTLIN, XML, PROPERTIES, PROGUARD, MARKDOWN
     }
+
+    enum class Complexity { SIMPLE, MEDIUM, COMPLEX }
 }
 
 data class AppSpec(
