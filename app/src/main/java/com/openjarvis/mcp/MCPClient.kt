@@ -1,3 +1,6 @@
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+
 package com.openjarvis.mcp
 
 import com.openjarvis.llm.HttpClient
