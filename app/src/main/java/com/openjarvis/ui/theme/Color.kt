@@ -7,6 +7,7 @@ object VoidColor {
     val Void900 = Color(0xFF100E18)
     val Void800 = Color(0xFF191625)
     val Void600 = Color(0xFF373044)
+    val Void700 = Color(0xFF282334)
     val TextPrimary = Color(0xFFF5F2FF)
     val TextSecondary = Color(0xFFB9B2CA)
     val TextDisabled = Color(0xFF817A91)
