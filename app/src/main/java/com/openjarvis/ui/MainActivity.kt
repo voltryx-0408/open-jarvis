@@ -25,6 +25,12 @@ import com.openjarvis.ui.theme.OpenJarvisTheme
 class MainActivity : ComponentActivity() {
     
     private lateinit var graphifyRepo: GraphifyRepository
+    private var permissionRefresh by mutableIntStateOf(0)
+
+    override fun onResume() {
+        super.onResume()
+        permissionRefresh++
+    }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +42,8 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             OpenJarvisTheme {
+                // Read this state so permissions are re-checked when returning from Android Settings.
+                val permissionRefreshSnapshot = permissionRefresh
                 val accessibilityEnabled = isAccessibilityServiceEnabled()
                 val overlayEnabled = Settings.canDrawOverlays(this)
                 
@@ -78,7 +86,7 @@ class MainActivity : ComponentActivity() {
     }
     
     private fun startOverlayService() {
-        startService(Intent(this, OverlayService::class.java))
+        androidx.core.content.ContextCompat.startForegroundService(this, Intent(this, OverlayService::class.java))
         Toast.makeText(this, "Jarvis is active", Toast.LENGTH_SHORT).show()
     }
     
