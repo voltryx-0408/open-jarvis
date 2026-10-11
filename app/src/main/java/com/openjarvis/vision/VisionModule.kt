@@ -43,14 +43,14 @@ class VisionModule(private val context: Context) {
                 val blocks = visionText.textBlocks.map { block ->
                     OCRBlock(
                         text = block.text,
-                        confidence = block.confidence,
+                        confidence = 1.0f,
                         boundingBox = block.boundingBox?.let { rect ->
                             BoundingBox(rect.left, rect.top, rect.right, rect.bottom)
                         },
                         lines = block.lines.map { line ->
                             OCRLine(
                                 text = line.text,
-                                confidence = line.confidence,
+                                confidence = 1.0f,
                                 boundingBox = line.boundingBox?.let { rect ->
                                     BoundingBox(rect.left, rect.top, rect.right, rect.bottom)
                                 }
