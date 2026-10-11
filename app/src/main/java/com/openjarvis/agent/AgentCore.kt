@@ -360,7 +360,7 @@ RULES:
 
                 Action.EXTRACT_TEXT -> {
                     val outputKey = action.outputKey ?: "page_text"
-                    val text = screenReader.extractAllText()
+                    val text = screenReader?.extractAllText() ?: ""
                     workingMemory.set(outputKey, text)
                 }
 
