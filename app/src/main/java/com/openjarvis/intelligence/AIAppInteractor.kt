@@ -7,14 +7,14 @@ import kotlinx.coroutines.delay
 
 class AIAppInteractor(private val context: Context) {
     
-    private val screenReader = ScreenReader(context)
+    private val screenReader: ScreenReader? get() = JarvisAccessibilityService.instance?.let { ScreenReader(it) }
     private val workingMemory = TaskWorkingMemory()
     
     fun openAIApp(meta: AIAppMeta): Boolean {
         return JarvisAccessibilityService.instance?.openAppByPackage(meta.packageName) ?: false
     }
     
-    fun clearContext() {
+    suspend fun clearContext() {
         try {
             JarvisAccessibilityService.instance?.pressBack()
             delay(300)
@@ -33,7 +33,7 @@ class AIAppInteractor(private val context: Context) {
         while (System.currentTimeMillis() - startTime < timeoutMs) {
             delay(1000)
             
-            val currentText = screenReader.extractAllText()
+            val currentText = screenReader?.extractAllText() ?: ""
             
             if (currentText == lastText) {
                 sameCount++
