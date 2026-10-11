@@ -79,7 +79,6 @@ class OverlayService : Service() {
         }
         
         try {
-            voiceManager.initialize()
         } catch (e: Exception) {
             // Voice initialization
         }
