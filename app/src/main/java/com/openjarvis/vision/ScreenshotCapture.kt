@@ -73,10 +73,10 @@ class ScreenshotCapture(private val context: Context) {
         try {
             mediaProjection?.createVirtualDisplay(
                 "Screenshot",
-                surface.width,
-                surface.height,
-                surface.allocation,
-                surface.allocation,
+                imageReader?.width ?: 1,
+                imageReader?.height ?: 1,
+                context.resources.displayMetrics.densityDpi,
+                context.resources.displayMetrics.densityDpi,
                 surface,
                 null,
                 handler
