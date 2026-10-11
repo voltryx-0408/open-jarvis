@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openjarvis.llm.UniversalAdapter
@@ -60,6 +61,7 @@ fun SettingsScreen(
     }
     
     val scrollState = rememberScrollState()
+    val uriHandler = LocalUriHandler.current
     
     Box(
         modifier = modifier
@@ -296,7 +298,24 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 AboutSection()
-                
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Read Privacy Notice",
+                    modifier = Modifier
+                        .clickable {
+                            uriHandler.openUri("https://github.com/voltryx-0408/open-jarvis/blob/main/PRIVACY.md")
+                        }
+                        .padding(vertical = 8.dp),
+                    style = TextStyle(
+                        fontFamily = FontFamily.Default,
+                        fontWeight = FontWeight(500),
+                        fontSize = 13.sp,
+                        color = VoidColor.Violet
+                    )
+                )
+
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
