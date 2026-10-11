@@ -57,7 +57,7 @@ class AIAppInteractor(private val context: Context) {
                 return screenReader?.extractAllText() ?: ""
             }
             ResponseExtraction.OCR_REQUIRED -> {
-                return screenReader.extractAllText()
+                return screenReader?.extractAllText() ?: ""
             }
             ResponseExtraction.COPY_BUTTON -> {
                 return tryCopyFromUI()
@@ -72,10 +72,10 @@ class AIAppInteractor(private val context: Context) {
     fun getWorkingMemory(): TaskWorkingMemory = workingMemory
     
     private fun tryCopyFromUI(): String {
-        return screenReader.extractAllText()
+        return screenReader?.extractAllText() ?: ""
     }
     
     private fun tryShareFromUI(): String {
-        return screenReader.extractAllText()
+        return screenReader?.extractAllText() ?: ""
     }
 }
