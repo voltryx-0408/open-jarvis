@@ -30,7 +30,7 @@ class AgentCore(private val context: Context) {
     private val graphifyRepo = GraphifyRepository(context)
     private val analysisEngine = AnalysisEngine(context)
     private val universalAdapter = UniversalAdapter(context)
-    private val screenReader = ScreenReader(context)
+    private val screenReader: ScreenReader? get() = JarvisAccessibilityService.instance?.let { ScreenReader(it) }
     private val visionModule = VisionModule.getInstance(context)
     private val taskRouter = TaskRouter(context)
     private val appAnalyzer = AppAnalyzer(context)
@@ -118,7 +118,7 @@ RULES:
                     _state.value = AgentState.Running("reading screen...")
 
                     val screenText = withContext(Dispatchers.IO) {
-                        screenReader.extractAllText()
+                        screenReader?.extractAllText() ?: ""
                     }
 
                     _state.value = AgentState.Running("getting context...")
@@ -208,7 +208,7 @@ RULES:
                             executeActions(actions)
 
                             graphifyRepo.logTask(
-                                cleanCommand = cleanCommand,
+                                command = cleanCommand,
                                 result = "success",
                                 provider = universalAdapter.getProviderName(),
                                 latencyMs = latency
