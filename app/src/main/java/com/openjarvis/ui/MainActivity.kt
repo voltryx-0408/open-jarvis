@@ -15,13 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import com.openjarvis.accessibility.JarvisAccessibilityService
-import com.openjarvis.agent.AgentCore
-import com.openjarvis.agent.AgentState
 import com.openjarvis.graphify.GraphifyRepository
-import com.openjarvis.graphify.nodes.TaskNode
 import com.openjarvis.ui.dashboard.DashboardScreen
 import com.openjarvis.ui.settings.SettingsScreen
 import com.openjarvis.ui.theme.OpenJarvisTheme
@@ -29,7 +25,6 @@ import com.openjarvis.ui.theme.OpenJarvisTheme
 class MainActivity : ComponentActivity() {
     
     private lateinit var graphifyRepo: GraphifyRepository
-    private lateinit var agentCore: AgentCore
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,21 +33,11 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         
         graphifyRepo = GraphifyRepository(this)
-        agentCore = AgentCore(this)
         
         setContent {
             OpenJarvisTheme {
-                val context = LocalContext.current
-                var recentTasks by remember { mutableStateOf<List<TaskNode>>(emptyList()) }
-                
-                LaunchedEffect(Unit) {
-                    recentTasks = graphifyRepo.getRecentTasks(10)
-                }
-                
                 val accessibilityEnabled = isAccessibilityServiceEnabled()
                 val overlayEnabled = Settings.canDrawOverlays(this)
-                
-                val agentState by agentCore.state.collectAsState()
                 
                 if (!accessibilityEnabled || !overlayEnabled) {
                     PermissionScreen(
