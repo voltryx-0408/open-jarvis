@@ -1,8 +1,6 @@
 package com.openjarvis.bridge
 
 import android.content.Context
-import android.os.Build
-import android.os.Process
 import com.openjarvis.agent.AgentCore
 import com.openjarvis.agent.AgentState
 import com.openjarvis.graphify.GraphifyRepository
@@ -29,21 +27,6 @@ class SocketServer(
     
     private val socketFile: java.io.File
         get() = java.io.File(context.filesDir, SOCKET_NAME)
-    
-    private val allowedUids = setOf(
-        context.applicationInfo.uid,
-        2000,
-        "com.termux".hashCode()
-    )
-
-    private fun isAuthorized(): Boolean {
-        return try {
-            val callingUid = Process.myUid()
-            callingUid in allowedUids
-        } catch (e: Exception) {
-            false
-        }
-    }
     
     companion object {
         private const val SOCKET_NAME = "jarvis.port"
@@ -77,7 +60,8 @@ class SocketServer(
 
     private suspend fun acceptConnections() = withContext(Dispatchers.IO) {
         try {
-            serverSocket = ServerSocket(0)
+            // Bind only to loopback; never expose this command endpoint on Wi-Fi/LAN.
+            serverSocket = ServerSocket(0, 10, java.net.InetAddress.getByName("127.0.0.1"))
             runningPort = serverSocket?.localPort ?: 0
             
             val sockFile = socketFile
@@ -100,6 +84,7 @@ class SocketServer(
 
     private suspend fun handleClient(clientSocket: Socket) = withContext(Dispatchers.IO) {
         try {
+            clientSocket.soTimeout = 3000
             val reader = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
             val writer = PrintWriter(clientSocket.getOutputStream(), true)
             
@@ -108,8 +93,8 @@ class SocketServer(
                 return@withContext
             }
 
-            if (!isAuthorized()) {
-                writer.println(createErrorResponse("", "unauthorized"))
+            if (line.length > MAX_COMMAND_LENGTH) {
+                writer.println(createErrorResponse("", "request too large"))
                 return@withContext
             }
 
