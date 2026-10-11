@@ -3,29 +3,30 @@ package com.openjarvis.accessibility
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 class JarvisAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+
         instance = this
-        
-        val info = AccessibilityServiceInfo().apply {
-            eventTypes = AccessibilityEvent.TYPES_ALL_MASK
+
+        // Keep the runtime configuration as narrow as the XML declaration.
+        // Do not request all events or enhanced web accessibility.
+        serviceInfo = serviceInfo.apply {
+            eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or
+                AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED or
+                AccessibilityEvent.TYPE_VIEW_CLICKED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
-            flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or 
-                   AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY
-            notificationTimeout = 100
+            flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+            notificationTimeout = 150
         }
-        serviceInfo = info
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        // Events are not logged or stored by this callback.
     }
 
     override fun onInterrupt() {
@@ -49,10 +50,10 @@ class JarvisAccessibilityService : AccessibilityService() {
         val intent = Intent(Intent.ACTION_MAIN, null).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
-        
+
         val apps = pm.queryIntentActivities(intent, 0)
         val normalizedLabel = label.lowercase()
-        
+
         for (app in apps) {
             val appLabel = app.loadLabel(pm).toString().lowercase()
             if (appLabel.contains(normalizedLabel) || normalizedLabel.contains(appLabel)) {
@@ -98,30 +99,27 @@ class JarvisAccessibilityService : AccessibilityService() {
 
     private fun findNodeByText(root: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
         val normalizedText = text.lowercase()
-        
         val queue = ArrayDeque<AccessibilityNodeInfo>()
         queue.add(root)
-        
+
         while (queue.isNotEmpty()) {
             val node = queue.removeFirst()
-            
+
             val nodeText = node.text?.toString()?.lowercase()
             val contentDesc = node.contentDescription?.toString()?.lowercase()
-            
+
             if (nodeText?.contains(normalizedText) == true || contentDesc?.contains(normalizedText) == true) {
                 if (node.isClickable && node.isVisibleToUser) {
                     return node
                 }
             }
-            
+
             for (i in 0 until node.childCount) {
-                node.getChild(i)?.let { child ->
-                    queue.add(child)
-                }
+                node.getChild(i)?.let { child -> queue.add(child) }
             }
             node.recycle()
         }
-        
+
         return null
     }
 
