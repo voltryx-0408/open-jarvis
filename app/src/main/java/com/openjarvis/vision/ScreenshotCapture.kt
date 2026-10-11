@@ -76,7 +76,7 @@ class ScreenshotCapture(private val context: Context) {
                 imageReader?.width ?: 1,
                 imageReader?.height ?: 1,
                 context.resources.displayMetrics.densityDpi,
-                context.resources.displayMetrics.densityDpi,
+                0,
                 surface,
                 null,
                 handler
