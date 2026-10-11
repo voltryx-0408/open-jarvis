@@ -301,6 +301,7 @@ private fun ProviderCard(name: String, subtitle: String, modifier: Modifier = Mo
 
 @Composable
 private fun TryItScreen(onBack: () -> Unit, onSuccess: () -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
     var command by remember { mutableStateOf("Open Chrome and search for weather") }
     var isRunning by remember { mutableStateOf(false) }
     
