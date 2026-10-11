@@ -511,6 +511,8 @@ fun FloatingLabelTextField(
     visible: Boolean = true,
     onTogglePassword: (() -> Unit)? = null
 ) {
+    var showPassword by remember { mutableStateOf(false) }
+
     val labelOffset by animateFloatAsState(
         targetValue = if (isFocused || value.isNotEmpty()) -20f else 0f,
         animationSpec = spring(stiffness = 300f, dampingRatio = 0.75f),
@@ -549,7 +551,7 @@ fun FloatingLabelTextField(
                     color = VoidColor.TextSecondary
                 ),
                 modifier = Modifier.graphicsLayer {
-                    translationY = labelOffset.dp.toPx()
+                    translationY = labelOffset
                     scaleX = labelScale
                     scaleY = labelScale
                 }
@@ -769,7 +771,7 @@ private fun PermissionRow(
             }
             
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = VoidColor.Red
             )
